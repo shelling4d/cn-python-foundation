@@ -24,10 +24,6 @@ def getMovieUrl(category, location):
     return url
 
 
-"""获取HTML"""
-html = expanddouban.getHtml(url)
-
-
 # 创建电影类
 class Movie():
     def __init__(self, name, rate, location, category, info_link, cover_link):
@@ -57,15 +53,17 @@ def getMovies(category, location):
         for element in content_a:
             M_name = element.find(class_='title').string
             M_rate = element.find(class_='rate').string
-            M_category = location
+            M_location = location
             M_category = category
             M_info_link = element.get('href')
             M_cover_link = element.find('img').get('src')
-            movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).show())
+            movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).write_data())
     return movies
 
 
-movies = getMovies("喜剧", "美国")
+movies_test = getMovies("喜剧", "美国")
+print(movies_test)
+
 favorite_types = ("剧情", "喜剧", "科幻")
 locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
              "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西丹麦")
@@ -76,15 +74,17 @@ locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
 霍伊特团队,9.0,香港,动作,https://movie.douban.com/subject/1307914/,https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p2329853674.jpg
 
 """
-movies_list = []
-for favorite_type in favorite_types:
-    for location in locations:
-        movies_list = movies_list + getMovies(favorite_type, location)
 
+"""将电影信息存储在movies_list里面 """
+movies_list = []
+for favorite_type in favorite_types:  # 类型有3个
+    for location in locations:  # 地区为全部地区
+        movies_list = movies_list + getMovies(favorite_type, location)
 
 """写入CSV文件"""
 with open('movies.csv', 'w', newline='') as f:
     moviewriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_NONE)
-    for movie in movies:
-        moviewriter(movie.show)
-f.close()
+    movies_list = []
+    for each_movie in movies_list:
+        moviewriter(each_movie)
+    f.close()
