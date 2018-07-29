@@ -17,20 +17,15 @@ urls = "https://movie.douban.com/tag/#/"  # 豆瓣电影分类页面
 """
 return a string corresponding to the URL of douban movie lists given category and location.
 """
+
+
 def getMovieUrl(category, location):
     url = 'https://movie.douban.com/tag/#/?sort=S&range=9,10&tags=' + str(category) + "," + str(location)
     return url
 
 
-# 打印测试
-url = getMovieUrl("喜剧", "美国")
-print("url:", url)
-
 """获取HTML"""
 html = expanddouban.getHtml(url)
-
-
-# print("html2:", html)
 
 
 # 创建电影类
@@ -43,40 +38,53 @@ class Movie():
         self.info_link = info_link
         self.cover_link = cover_link
 
-    def show(self):
+    def write_data(self):
         return "{},{},{},{},{},{}".format(self.name, self.rate, self.location, self.category, self.info_link,
                                           self.cover_link)
 
 
-"""
-return a list of Movie objects with the given category and location.
-"""
 def getMovies(category, location):
+    """
+    return a list of Movie objects with the given category and location.
+    """
     movies = []
     for loc in location:
         url = getMovieUrl(category, location)
         html = expanddouban.getHtml(url, True)
         soup = BeautifulSoup(html, 'html.parser')
         content_a = soup.find(id='content').find(class_='list-wp').find_all('a', recursive=False)
-        print("捕捉内容为：", content_a)
+        print("content_a:", content_a)
         for element in content_a:
             M_name = element.find(class_='title').string
             M_rate = element.find(class_='rate').string
+            M_category = location
             M_category = category
             M_info_link = element.get('href')
             M_cover_link = element.find('img').get('src')
             movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).show())
     return movies
 
-content = getMovies("喜剧", "美国")
-favorites = ("喜剧", "科幻", "动作")
+
+movies = getMovies("喜剧", "美国")
+favorite_types = ("剧情", "喜剧", "科幻")
+locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
+             "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西丹麦")
+
+"""
+从网页上选取你最爱的三个电影类型，然后获取每个地区的电影信息后，我们可以获得一个包含三个类型、所有地区，评分超过9分的完整电影对象的列表。将列表输出到文件 movies.csv，格式如下:
+肖申克的救赎,9.6,美国,剧情,https://movie.douban.com/subject/1292052/,https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p480747492.jpg
+霍伊特团队,9.0,香港,动作,https://movie.douban.com/subject/1307914/,https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p2329853674.jpg
+
+"""
+movies_list = []
+for favorite_type in favorite_types:
+    for location in locations:
+        movies_list = movies_list + getMovies(favorite_type, location)
+
 
 """写入CSV文件"""
 with open('movies.csv', 'w', newline='') as f:
-    spamwriter = csv.writer(f, delimiter=',',
-                            quotechar='|', quoting=csv.QUOTE_NONE)
-
-types = ("剧情", "喜剧", "动作", "爱情", "科幻", "悬疑", "惊悚", "恐怖", "犯罪", "同性",
-         "音乐", "歌舞", "传记", "历史", "战争", "西部", "奇幻", "冒险", "灾难", "武侠", "情色")
-locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
-             "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西丹麦")
+    moviewriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_NONE)
+    for movie in movies:
+        moviewriter(movie.show)
+f.close()
