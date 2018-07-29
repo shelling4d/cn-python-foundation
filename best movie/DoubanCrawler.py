@@ -17,31 +17,23 @@ urls = "https://movie.douban.com/tag/#/"  # 豆瓣电影分类页面
 """
 return a string corresponding to the URL of douban movie lists given category and location.
 """
-
-
 def getMovieUrl(category, location):
-    url = 'https://movie.douban.com/tag/#/?sort=S&range=9,10&tags=' + \
-          str(category) + "," + str(location)
-    print(type(url))
+    url = 'https://movie.douban.com/tag/#/?sort=S&range=9,10&tags=' + str(category) + "," + str(location)
     return url
 
 
 # 打印测试
 url = getMovieUrl("喜剧", "美国")
-print(url)
+print("url:", url)
 
 """获取HTML"""
 html = expanddouban.getHtml(url)
-print(html)
-
-"""
-response = requests.get(url)
-html = response.text
-"""
-
-"""创建电影类"""
 
 
+# print("html2:", html)
+
+
+# 创建电影类
 class Movie():
     def __init__(self, name, rate, location, category, info_link, cover_link):
         self.name = name
@@ -52,32 +44,31 @@ class Movie():
         self.cover_link = cover_link
 
     def show(self):
-        print('Name:"{}" rate:"{}"'.format(self.name, self.rate), end=" ")
+        return "{},{},{},{},{},{}".format(self.name, self.rate, self.location, self.category, self.info_link,
+                                          self.cover_link)
 
 
 """
 return a list of Movie objects with the given category and location.
 """
-
-
 def getMovies(category, location):
-    url = getMovieUrl(category, location)
-    html = expanddouban.getHtml(url)
-    soup = BeautifulSoup(html, 'lxml')
-    totalContent = soup.find(
-        'div', {'class': 'list-wb'}).findAll('a')  # 每个分类的电影的全部信息
-    print(totalContent)
-    for link in soup.find_all('a'):
-        print(link.get('href'))
-        # for each_movie in movies:
-
-        return totalContent
-
+    movies = []
+    for loc in location:
+        url = getMovieUrl(category, location)
+        html = expanddouban.getHtml(url, True)
+        soup = BeautifulSoup(html, 'html.parser')
+        content_a = soup.find(id='content').find(class_='list-wp').find_all('a', recursive=False)
+        print("捕捉内容为：", content_a)
+        for element in content_a:
+            M_name = element.find(class_='title').string
+            M_rate = element.find(class_='rate').string
+            M_category = category
+            M_info_link = element.get('href')
+            M_cover_link = element.find('img').get('src')
+            movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).show())
+    return movies
 
 content = getMovies("喜剧", "美国")
-
-print(content)
-
 favorites = ("喜剧", "科幻", "动作")
 
 """写入CSV文件"""
@@ -89,8 +80,3 @@ types = ("剧情", "喜剧", "动作", "爱情", "科幻", "悬疑", "惊悚", "
          "音乐", "歌舞", "传记", "历史", "战争", "西部", "奇幻", "冒险", "灾难", "武侠", "情色")
 locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
              "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西丹麦")
-
-'''
-with open(name,mode,encoding) as file：
-  file.write()
-'''
