@@ -38,6 +38,16 @@ class Movie():
         return "{},{},{},{},{},{}".format(self.name, self.rate, self.location, self.category, self.info_link,
                                           self.cover_link)
 
+    def get_list(self):
+        a = []
+        a.append(self.name)
+        a.append(self.rate)
+        a.append(self.location)
+        a.append(self.category)
+        a.append(self.info_link)
+        a.append(self.cover_link)
+        return a
+
 
 def getMovies(category, location):
     """
@@ -49,7 +59,6 @@ def getMovies(category, location):
         html = expanddouban.getHtml(url, True)
         soup = BeautifulSoup(html, 'html.parser')
         content_a = soup.find(id='content').find(class_='list-wp').find_all('a', recursive=False)
-        print("content_a:", content_a)
         for element in content_a:
             M_name = element.find(class_='title').string
             M_rate = element.find(class_='rate').string
@@ -57,8 +66,8 @@ def getMovies(category, location):
             M_category = category
             M_info_link = element.get('href')
             M_cover_link = element.find('img').get('src')
-            movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).write_data())
-    return movies
+            movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).get_list())
+    return movies  # 这里的movies是列表，元素是一个列表
 
 
 movies_test = getMovies("喜剧", "美国")
@@ -69,10 +78,11 @@ locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
              "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西丹麦")
 
 """
+任务5：
+
 从网页上选取你最爱的三个电影类型，然后获取每个地区的电影信息后，我们可以获得一个包含三个类型、所有地区，评分超过9分的完整电影对象的列表。将列表输出到文件 movies.csv，格式如下:
 肖申克的救赎,9.6,美国,剧情,https://movie.douban.com/subject/1292052/,https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p480747492.jpg
 霍伊特团队,9.0,香港,动作,https://movie.douban.com/subject/1307914/,https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p2329853674.jpg
-
 """
 
 """将电影信息存储在movies_list里面 """
@@ -80,11 +90,10 @@ movies_list = []
 for favorite_type in favorite_types:  # 类型有3个
     for location in locations:  # 地区为全部地区
         movies_list = movies_list + getMovies(favorite_type, location)
+print(movies_list)
 
 """写入CSV文件"""
 with open('movies.csv', 'w', newline='') as f:
-    moviewriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_NONE)
-    movies_list = []
-    for each_movie in movies_list:
-        moviewriter(each_movie)
+    writer = csv.writer(f, delimiter=',')
+    writer.writerows(movies_list)
     f.close()
