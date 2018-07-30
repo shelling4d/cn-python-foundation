@@ -87,9 +87,14 @@ locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
 
 """将电影信息存储在movies_list里面 """
 movies_list = []
+d_type = {}
 for favorite_type in favorite_types:  # 类型有3个
-    for location in locations:  # 地区为全部地区
-        movies_list = movies_list + getMovies(favorite_type, location)
+    d_loc = {}
+    for loction in locations:  # 地区为全部地区
+        tmp_movies = getMovies(favorite_type, location)
+        movies_list = movies_list + tmp_movies
+        d_loc[loction] = len(tmp_movies)
+    d_type[favorite_type] = d_loc
 print(movies_list)
 
 """写入CSV文件"""

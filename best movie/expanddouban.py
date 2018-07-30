@@ -1,5 +1,6 @@
 from selenium import webdriver
 import time
+import random
 
 """
 url: the douban page we will get html from
@@ -8,7 +9,7 @@ waittime: seconds the broswer will wait after intial load and
 """
 
 
-def getHtml(url, loadmore=True, waittime=10):
+def getHtml(url, loadmore=True, waittime=5):
     browser = webdriver.Chrome('chromedriver')
     browser.get(url)
     time.sleep(waittime)
