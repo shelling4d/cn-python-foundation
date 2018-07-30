@@ -102,3 +102,14 @@ with open('movies.csv', 'w', newline='') as f:
     writer = csv.writer(f, delimiter=',')
     writer.writerows(movies_list)
     f.close()
+
+"写入out.txt"
+with open("output.txt") as f1:
+    for t1 in d_type.keys():
+        f1.writelines("在{}类型中：".format(t1))
+        nums = []
+        for num in d_type[t1].values():
+            nums.append(num)
+    nums.sort()
+        
+f1.write
