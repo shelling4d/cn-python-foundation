@@ -1,6 +1,5 @@
 from selenium import webdriver
 import time
-import random
 
 """
 url: the douban page we will get html from

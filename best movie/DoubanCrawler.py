@@ -71,7 +71,7 @@ for favorite_type in favorite_types:  # 类型有3个
     d_nums = {}
     n = 0
     for lo in locations:  # 地区为全部地区
-        tmp_movies = getMovies(favorite_type, location)
+        tmp_movies = getMovies(favorite_type, lo)
         movies_list = movies_list + tmp_movies
         d_nums[lo] = len(tmp_movies)
         n += len(tmp_movies)
@@ -81,10 +81,10 @@ for favorite_type in favorite_types:  # 类型有3个
         txt.write("在{0}类型中，数量排名前三的地区有{1},{2},{3}，分别占此类电影总数的{4:.2%},{5:.2%},{6.2%}".format(lo, sorted_d_nuums[0][0],
                                                                                           sorted_d_nuums[1][0],
                                                                                           sorted_d_nuums[2][0],
-                                                                                          int(sorted_d_nuums[0][0]) / n,
-                                                                                          int(sorted_d_nuums[1][0]) / n,
+                                                                                          int(sorted_d_nuums[1][1]) / n,
+                                                                                          int(sorted_d_nuums[1][1]) / n,
                                                                                           int(sorted_d_nuums[2][
-                                                                                                  0]) / n))
+                                                                                                  1]) / n))
         txt.close()
 
 """写入CSV文件"""
