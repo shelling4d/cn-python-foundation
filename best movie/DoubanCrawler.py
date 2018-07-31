@@ -20,7 +20,7 @@ return a string corresponding to the URL of douban movie lists given category an
 
 
 def getMovieUrl(category, location):
-    url = 'https://movie.douban.com/tag/#/?sort=S&range=9,10&tags=' + str(category) + "," + str(location)
+    url = 'https://movie.douban.com/tag/#/?sort=S&range=9,10&tags={},{}'.format(category,location)
     return url
 
 
@@ -67,11 +67,7 @@ def getMovies(category, location):
             M_info_link = element.get('href')
             M_cover_link = element.find('img').get('src')
             movies.append(Movie(M_name, M_rate, M_location, M_category, M_info_link, M_cover_link).get_list())
-    return movies  # 这里的movies是列表，元素是一个列表
-
-
-movies_test = getMovies("喜剧", "美国")
-print(movies_test)
+    return movies  # 这里的movies是列表，元素是也一个列表
 
 favorite_types = ("剧情", "喜剧", "科幻")
 locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
@@ -87,15 +83,12 @@ locations = ("中国大陆", "美国", "香港", "台湾", "日本", "韩国",
 
 """将电影信息存储在movies_list里面 """
 movies_list = []
-d_type = {}
 for favorite_type in favorite_types:  # 类型有3个
-    d_loc = {}
-    for loction in locations:  # 地区为全部地区
+    li_loc = []
+    for loction in locations:  # 遍历地区
         tmp_movies = getMovies(favorite_type, location)
         movies_list = movies_list + tmp_movies
-        d_loc[loction] = len(tmp_movies)
-    d_type[favorite_type] = d_loc
-print(movies_list)
+        li_loc.append(list[loction,len(tmp_movies)])
 
 """写入CSV文件"""
 with open('movies.csv', 'w', newline='') as f:
