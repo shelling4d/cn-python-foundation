@@ -78,12 +78,12 @@ for favorite_type in favorite_types:  # 类型有3个
     sorted_d_nuums = sorted(d_nums.items(), key=lambda d_nums: d_nums[1], reverse=True)
     # sortef_d是由元组组成的列表[(key,value), (key,value)]
     with open('output.txt', 'a') as txt:
-        txt.write("在{0}类型中，数量排名前三的地区有{1},{2},{3}，分别占此类电影总数的{4:.2%},{5:.2%},{6.2%}".format(lo, sorted_d_nuums[0][0],
-                                                                                          sorted_d_nuums[1][0],
-                                                                                          sorted_d_nuums[2][0],
-                                                                                          int(sorted_d_nuums[1][1]) / n,
-                                                                                          int(sorted_d_nuums[1][1]) / n,
-                                                                                          int(sorted_d_nuums[2][
+        txt.write("在{0}类型中，数量排名前三的地区有{1},{2},{3}，分别占此类电影总数的{4:.2%},{5:.2%},{6:.2%}".format(lo, sorted_d_nuums[0][0],
+                                                                                           sorted_d_nuums[1][0],
+                                                                                           sorted_d_nuums[2][0],
+                                                                                           int(sorted_d_nuums[1][1]) / n,
+                                                                                           int(sorted_d_nuums[1][1]) / n,
+                                                                                           int(sorted_d_nuums[2][
                                                                                                   1]) / n))
         txt.close()
 
