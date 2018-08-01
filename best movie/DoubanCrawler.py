@@ -61,10 +61,10 @@ def getMovies(category, location):
     return movies  # 这里的movies是列表，元素是一个列表
 
 
-favorite_types = ("剧情", "喜剧", "科幻")
+favorite_types = ("剧情", "喜剧", "奇幻")
 locations = (
-    "中国大陆", "美国", "香港", "台湾", "日本", "韩国", "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯", "伊朗", "加拿大", "澳大利亚", "爱尔兰",
-    "瑞典", "巴西", "丹麦")
+    "中国大陆", "美国", "香港", "台湾", "日本", "韩国", "英国", "法国", "德国", "意大利", "西班牙", "印度", "泰国", "俄罗斯",
+    "伊朗", "加拿大", "澳大利亚", "爱尔兰", "瑞典", "巴西", "丹麦")
 
 """将电影信息存储在movies_list里面 """
 movies_list = []
@@ -92,7 +92,7 @@ for favorite_type in favorite_types:  # 类型有3个
         txt.close()
 
 """写入CSV文件"""
-with open('movies.csv', 'w', newline='', encoding='utf-8') as f:
+with open('movies.csv', 'w', newline='', encoding='utf-8-sig') as f:
     writer = csv.writer(f, delimiter=',')
     writer.writerows(movies_list)
     f.close()
