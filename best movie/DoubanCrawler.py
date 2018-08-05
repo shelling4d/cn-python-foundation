@@ -78,7 +78,7 @@ for favorite_type in favorite_types:  # 类型有3个
         n += len(tmp_movies)
     sorted_d_nuums = sorted(d_nums.items(), key=lambda d_nums: d_nums[1], reverse=True)
     # sortef_d是由元组组成的列表[(key,value), (key,value)]
-    with open('output.txt', 'a') as txt:
+    with open('output.txt', 'a',encoding='utf-8-sig') as txt:
         txt.write("在{0}类型中，数量排名前三的地区有{1},{2},{3}，分别占此类电影总数的{4:.2%},{5:.2%},{6:.2%}\n".format(favorite_type,
                                                                                              sorted_d_nuums[0][0],
                                                                                              sorted_d_nuums[1][0],
@@ -89,10 +89,8 @@ for favorite_type in favorite_types:  # 类型有3个
                                                                                                      1]) / n,
                                                                                              int(sorted_d_nuums[2][
                                                                                                      1]) / n))
-        txt.close()
 
 """写入CSV文件"""
 with open('movies.csv', 'w', newline='', encoding='utf-8-sig') as f:
     writer = csv.writer(f, delimiter=',')
     writer.writerows(movies_list)
-    f.close()
